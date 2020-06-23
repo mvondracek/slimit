@@ -97,6 +97,8 @@ class Lexer(object):
         self.cur_token = None
         self.next_tokens = []
         self.build()
+        self.lineno = 1
+        self.lexpos = 0
 
     def build(self, **kwargs):
         """Build the lexer."""
