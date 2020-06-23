@@ -387,7 +387,7 @@ class Parser(object):
                      | call_expr PERIOD identifier
         """
         if len(p) == 3:
-            p[0] = ast.FunctionCall(p[1], p[2])
+            p[0] = ast.FunctionCall(p[1], p[2], lex_lineno=p.slice[1].lineno, lex_lexpos=p.slice[1].lexpos)
         elif len(p) == 4:
             p[0] = ast.DotAccessor(p[1], p[3])
         else:
@@ -400,7 +400,7 @@ class Parser(object):
                           | call_expr_nobf PERIOD identifier
         """
         if len(p) == 3:
-            p[0] = ast.FunctionCall(p[1], p[2])
+            p[0] = ast.FunctionCall(p[1], p[2], lex_lineno=p.slice[1].lineno, lex_lexpos=p.slice[1].lexpos)
         elif len(p) == 4:
             p[0] = ast.DotAccessor(p[1], p[3])
         else:

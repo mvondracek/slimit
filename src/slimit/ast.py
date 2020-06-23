@@ -115,9 +115,11 @@ class NewExpr(Node):
         return [self.identifier, self.args]
 
 class FunctionCall(Node):
-    def __init__(self, identifier, args=None):
+    def __init__(self, identifier, args=None, lex_lineno=None, lex_lexpos=None):
         self.identifier = identifier
         self.args = [] if args is None else args
+        self.lex_lineno = lex_lineno
+        self.lex_lexpos = lex_lexpos
 
     def children(self):
         return [self.identifier] + self.args
