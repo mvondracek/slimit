@@ -16,7 +16,12 @@ Topic :: Software Development :: Compilers
 Operating System :: Unix
 """
 
-requirements = ['ply>=3.11']
+
+def read(*rel_names):
+    return open(os.path.join(os.path.dirname(__file__), *rel_names)).read()
+
+
+requirements = read('requirements.txt').splitlines()
 major, minor = sys.version_info[:2] # Python version
 if major == 2 and minor <=6:
     # OrderedDict was added to the collections module in Python 2.7 and it is
@@ -29,9 +34,6 @@ if major == 3:
     except ImportError:
         print("Python 3.X support requires the 2to3 tool.")
         sys.exit(1)
-
-def read(*rel_names):
-    return open(os.path.join(os.path.dirname(__file__), *rel_names)).read()
 
 
 setup(
