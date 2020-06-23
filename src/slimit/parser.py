@@ -89,8 +89,8 @@ class Parser(object):
                 self.lexer.prev_token, self.lexer.token())
             )
 
-    def parse(self, text, debug=False):
-        return self.parser.parse(text, lexer=self.lexer, debug=debug)
+    def parse(self, text, debug=False, tracking=False):
+        return self.parser.parse(text, lexer=self.lexer, debug=debug, tracking=tracking)
 
     def p_empty(self, p):
         """empty :"""
