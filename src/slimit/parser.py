@@ -27,7 +27,7 @@ __author__ = 'Ruslan Spivak <ruslan.spivak@gmail.com>'
 import ply.yacc
 
 from slimit import ast
-from slimit.lexer import Lexer
+from slimit.lexer import Lexer, find_column
 
 try:
     from slimit import lextab, yacctab
@@ -44,16 +44,16 @@ class Parser(object):
     '*nobf' stands for 'no brace or function'
     """
 
-    def __init__(self, lex_optimize=True, lextab=lextab,
+    def __init__(self, lextab=lextab,
                  yacc_optimize=True, yacctab=yacctab, yacc_debug=False):
-        self.lex_optimize = lex_optimize
+        self.lex_optimize = False
         self.lextab = lextab
         self.yacc_optimize = yacc_optimize
         self.yacctab = yacctab
         self.yacc_debug = yacc_debug
 
         self.lexer = Lexer()
-        self.lexer.build(optimize=lex_optimize, lextab=lextab)
+        self.lexer.build(optimize=self.lex_optimize, lextab=lextab)
         self.tokens = self.lexer.tokens
 
         self.parser = ply.yacc.yacc(
@@ -388,12 +388,12 @@ class Parser(object):
         """
         if len(p) == 3:
             try:
-                lex_lineno = p.slice[1].lineno
-                lex_lexpos = p.slice[1].lexpos
+                lex_line = p.slice[1].lineno
+                lex_column = find_column(p.lexer.lexer.lexdata, p.slice[1])
             except AttributeError:
-                lex_lineno = None
-                lex_lexpos = None
-            p[0] = ast.FunctionCall(p[1], p[2], lex_lineno=lex_lineno, lex_lexpos=lex_lexpos)
+                lex_line = None
+                lex_column = None
+            p[0] = ast.FunctionCall(p[1], p[2], lex_line=lex_line, lex_column=lex_column)
         elif len(p) == 4:
             p[0] = ast.DotAccessor(p[1], p[3])
         else:
@@ -407,12 +407,12 @@ class Parser(object):
         """
         if len(p) == 3:
             try:
-                lex_lineno = p.slice[1].lineno
-                lex_lexpos = p.slice[1].lexpos
+                lex_line = p.slice[1].lineno
+                lex_column = find_column(p.lexer.lexer.lexdata, p.slice[1])
             except AttributeError:
-                lex_lineno = None
-                lex_lexpos = None
-            p[0] = ast.FunctionCall(p[1], p[2], lex_lineno=lex_lineno, lex_lexpos=lex_lexpos)
+                lex_line = None
+                lex_column = None
+            p[0] = ast.FunctionCall(p[1], p[2], lex_line=lex_line, lex_column=lex_column)
         elif len(p) == 4:
             p[0] = ast.DotAccessor(p[1], p[3])
         else:

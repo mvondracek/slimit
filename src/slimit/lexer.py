@@ -53,6 +53,28 @@ TOKENS_THAT_IMPLY_DIVISON = frozenset([
     ])
 
 
+def find_column(input_text: str, token: ply.lex.LexToken) -> int:
+    """
+    Compute column (position on line) of token in input text string.
+
+    Args:
+        input_text: input text string
+        token:  token instance
+
+    Returns:
+        column number where provided token starts on line
+
+    See Also:
+        https://ply.readthedocs.io/en/latest/ply.html#line-numbers-and-positional-information
+    """
+    # `ply.lex.LexToken` should have `lexpos`, but it's not defined in its
+    # `__init__()`
+    # noinspection PyUnresolvedReferences
+    lexpos: int = token.lexpos
+    line_start = input_text.rfind('\n', 0, lexpos) + 1
+    return (lexpos - line_start) + 1
+
+
 class Lexer(object):
     """A JavaScript lexer.
 
@@ -345,7 +367,11 @@ class Lexer(object):
     t_LINE_COMMENT  = r'//[^\r\n]*'
     t_BLOCK_COMMENT = r'/\*[^*]*\*+([^/*][^*]*\*+)*/'
 
-    t_LINE_TERMINATOR = r'[\n\r]+'
+    @ply.lex.TOKEN(r'[\n\r]+')
+    def t_LINE_TERMINATOR(self, token):
+        # https://ply.readthedocs.io/en/latest/ply.html#line-numbers-and-positional-information
+        token.lexer.lineno += len(token.value)
+        return token
 
     t_ignore = ' \t'
 

@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 #
 ###############################################################################
+from typing import List
 
 __author__ = 'Ruslan Spivak <ruslan.spivak@gmail.com>'
 
@@ -69,6 +70,24 @@ class ParserTestCase(unittest.TestCase):
         """
         parser = Parser()
         parser.parse(text)
+
+    def test_tracking_function_call_position_multiple_lines(self):
+        tree = Parser().parse(
+            '\nvar a = 1;\nobj1.f()\nvar b=2;obj2.g()',
+            tracking=True)
+        function_calls: List[ast.FunctionCall] = list(filter(
+            lambda n: isinstance(n, ast.FunctionCall),
+            nodevisitor.visit(tree)))
+        self.assertEqual(2, len(function_calls))
+        i = 0
+        self.assertEqual('f', function_calls[i].identifier.identifier.value)
+        self.assertEqual(3, function_calls[i].lex_line)
+        self.assertEqual(1, function_calls[i].lex_column)
+
+        i = 1
+        self.assertEqual('g', function_calls[i].identifier.identifier.value)
+        self.assertEqual(4, function_calls[i].lex_line)
+        self.assertEqual(9, function_calls[i].lex_column)
 
     def test_modify_tree(self):
         text = """

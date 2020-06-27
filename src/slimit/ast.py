@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 #
 ###############################################################################
+from typing import Optional
 
 __author__ = 'Ruslan Spivak <ruslan.spivak@gmail.com>'
 
@@ -115,11 +116,11 @@ class NewExpr(Node):
         return [self.identifier, self.args]
 
 class FunctionCall(Node):
-    def __init__(self, identifier, args=None, lex_lineno=None, lex_lexpos=None):
+    def __init__(self, identifier, args=None, lex_line=None, lex_column=None):
         self.identifier = identifier
         self.args = [] if args is None else args
-        self.lex_lineno = lex_lineno
-        self.lex_lexpos = lex_lexpos
+        self.lex_line: Optional[int] = lex_line
+        self.lex_column: Optional[int] = lex_column
 
     def children(self):
         return [self.identifier] + self.args
