@@ -38,7 +38,7 @@ if major == 3:
 
 setup(
     name='slimit',
-    version='0.10.0',
+    version='0.11.0-mv',
     url='https://slimit.readthedocs.io',
     cmdclass = {'build_py': build_py},
     license='MIT',
